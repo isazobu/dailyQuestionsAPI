@@ -1,4 +1,4 @@
-module github.com/isazobu/dailyQuestionsAPI.git
+module github.com/isazobu/dailyQuestionsAPI
 
 go 1.17
 
