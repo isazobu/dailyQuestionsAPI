@@ -1,3 +1,5 @@
+package dto
+
 type GetQuestion struct {
 	ID          string   `json:"id"`
 	Title       string   `json:"title"`

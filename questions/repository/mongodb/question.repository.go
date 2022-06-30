@@ -2,7 +2,6 @@ package repository
 
 import (
 	db "github.com/isazobu/dailyQuestionsAPI/database"
-	"github.com/isazobu/dailyQuestionsAPI/models"
 	"github.com/isazobu/dailyQuestionsAPI/questions/models"
 
 	"context"
