@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/isazobu/dailyQuestionsAPI/db/db"
+	db "github.com/isazobu/dailyQuestionsAPI/database"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
