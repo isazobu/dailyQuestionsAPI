@@ -25,7 +25,7 @@ func insertQuestion(c echo.Context) error {
 	return c.JSON(http.StatusOK, question)
 }
 
-func QuestionReg(v1 *echo.Group) {
+func QuestionRegister(v1 *echo.Group) {
 	fmt.Println("Girdim")
 	questions := v1.Group("/questions")
 	// questions.GET("/", GetQuestions)

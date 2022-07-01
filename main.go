@@ -29,14 +29,6 @@ var (
 // Handlers
 //----------
 
-func (cv *CustomValidator) Validate(i interface{}) error {
-	if err := cv.validator.Struct(i); err != nil {
-		// Optionally, you could return the error to give each route more control over the status code
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	return nil
-}
-
 func createUser(c echo.Context) error {
 	u := &user{
 		ID: seq,
@@ -83,7 +75,7 @@ func main() {
 	db.ConnectDB()
 
 	// Start server
-	e.Logger.Fatal(e.Start(":3000"))
+	r.Logger.Fatal(r.Start(":3000"))
 }
 func insertQuestion(c echo.Context) error {
 	u := &models.Question{}

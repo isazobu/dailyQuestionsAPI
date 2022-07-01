@@ -3,7 +3,6 @@ module github.com/isazobu/dailyQuestionsAPI
 go 1.17
 
 require (
-	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/labstack/gommon v0.3.1
 	go.mongodb.org/mongo-driver v1.9.1
