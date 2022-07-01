@@ -7,6 +7,7 @@ require (
 	github.com/labstack/gommon v0.3.1
 	go.mongodb.org/mongo-driver v1.9.1
 	gopkg.in/go-playground/validator.v9 v9.31.0
+	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 )
 
 require (
@@ -33,4 +34,5 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20201208040808-7e3f01d25324 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
