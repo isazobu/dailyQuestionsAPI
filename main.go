@@ -5,6 +5,8 @@ import (
 	"strconv"
 
 	db "github.com/isazobu/dailyQuestionsAPI/database"
+	"github.com/isazobu/dailyQuestionsAPI/questions/models"
+	repository "github.com/isazobu/dailyQuestionsAPI/questions/repository/mongodb"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -71,7 +73,7 @@ func main() {
 	db.ConnectDB()
 	// Routes
 	e.GET("/users", getAllUsers)
-	e.POST("/users", createUser)
+	e.POST("/questions", repository.Insert(models.Question{"title", "amdsoads"}))
 	e.GET("/users/:id", getUser)
 	e.PUT("/users/:id", updateUser)
 	e.DELETE("/users/:id", deleteUser)

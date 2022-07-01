@@ -14,7 +14,7 @@ var DB *mongo.Client = ConnectDB()
 
 func ConnectDB() *mongo.Client {
 	fmt.Println("ConnectDB the GetCollection process")
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://faruk:faruk@cluster0.hbxro.mongodb.net/?retryWrites=true&w=majority"))
 	if err != nil {
 		fmt.Println("Connection Error 1 ")
 	}
