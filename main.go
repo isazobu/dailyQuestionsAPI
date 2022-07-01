@@ -1,14 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
 	db "github.com/isazobu/dailyQuestionsAPI/database"
 	"github.com/isazobu/dailyQuestionsAPI/questions/models"
 	repository "github.com/isazobu/dailyQuestionsAPI/questions/repository/mongodb"
+	router "github.com/isazobu/dailyQuestionsAPI/router"
+	setup "github.com/isazobu/dailyQuestionsAPI/setup"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 type (
@@ -26,6 +28,14 @@ var (
 //----------
 // Handlers
 //----------
+
+func (cv *CustomValidator) Validate(i interface{}) error {
+	if err := cv.validator.Struct(i); err != nil {
+		// Optionally, you could return the error to give each route more control over the status code
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return nil
+}
 
 func createUser(c echo.Context) error {
 	u := &user{
@@ -65,19 +75,28 @@ func getAllUsers(c echo.Context) error {
 }
 
 func main() {
-	e := echo.New()
 
-	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	r := setup.New()
+	v1 := r.Group("/api")
+	router.RegisterAllRoute(v1)
+
 	db.ConnectDB()
-	// Routes
-	e.GET("/users", getAllUsers)
-	e.POST("/questions", repository.Insert(models.Question{"title", "amdsoads"}))
-	e.GET("/users/:id", getUser)
-	e.PUT("/users/:id", updateUser)
-	e.DELETE("/users/:id", deleteUser)
 
 	// Start server
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":3000"))
+}
+func insertQuestion(c echo.Context) error {
+	u := &models.Question{}
+	if err := c.Bind(u); err != nil {
+		return err
+	}
+
+	fmt.Println(u)
+
+	question, err := repository.Insert(models.Question{Title: u.Title, Image: u.Image})
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(question)
+	return c.JSON(http.StatusOK, question)
 }
