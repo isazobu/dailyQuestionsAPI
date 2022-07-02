@@ -8,7 +8,7 @@ import (
 	db "github.com/isazobu/dailyQuestionsAPI/database"
 	"github.com/isazobu/dailyQuestionsAPI/questions/models"
 	repository "github.com/isazobu/dailyQuestionsAPI/questions/repository/mongodb"
-	router "github.com/isazobu/dailyQuestionsAPI/router"
+	QuestionRouter "github.com/isazobu/dailyQuestionsAPI/questions/router"
 	setup "github.com/isazobu/dailyQuestionsAPI/setup"
 	"github.com/labstack/echo/v4"
 )
@@ -69,8 +69,7 @@ func getAllUsers(c echo.Context) error {
 func main() {
 
 	r := setup.New()
-	v1 := r.Group("/api")
-	router.RegisterAllRoute(v1)
+	QuestionRouter.QuestionRegister(r, "/questions")
 
 	db.ConnectDB()
 

@@ -1,9 +1,11 @@
 package models
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type Question struct {
-	// ID    primitive.ObjectID `json:"id,omitempty" bson:"_id"`
-	Title string `json:"title,omitempty" form:"title" validate:"required" bson:"title"`
-	Image string `json:"image,omitempty" bson:"image"`
+	Id    primitive.ObjectID `json:"id,omitempty" bson:"_id"`
+	Title string             `json:"title,omitempty" form:"title" validate:"required" bson:"title"`
+	Image string             `json:"image,omitempty" bson:"image"`
 
 	// Description string             `json:"description" bson:"description"`
 	// Option_A    string             `json:"option_a" bson:"option_a"`
