@@ -25,13 +25,10 @@ func insertQuestion(c echo.Context) error {
 	return c.JSON(http.StatusOK, question)
 }
 
-func QuestionRegister(v1 *echo.Group) {
-	fmt.Println("Girdim")
-	questions := v1.Group("/questions")
-	// questions.GET("/", GetQuestions)
-	questions.POST("/", insertQuestion)
-	// questions.GET("/:id", GetQuestion)
-	// questions.PUT("/:id", UpdateQuestion)
-	// questions.DELETE("/:id", DeleteQuestion)
+func QuestionRegister(e *echo.Echo) {
+
+	e.GET("/questions", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "Hello, World!")
+	})
 
 }
