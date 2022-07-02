@@ -7,10 +7,10 @@ import (
 )
 
 type QuestionService interface {
-	AddQuestion(question models.Question) (models.Question, error)
+	AddQuestion(question models.Question) (*mongo.InsertOneResult, error)
 	GetQuestionsByCategory(category string) ([]models.Question, error)
 	GetQuestionById(id string) (models.Question, error)
-	UpdateQuestion(question models.Question) (models.Question, error)
+	UpdateQuestion(question models.Question) (*mongo.UpdateResult, error)
 	DeleteQuestion(id string) error
 }
 type questionService struct {

@@ -1,11 +1,21 @@
 package QuestionController
 
 import (
-	"net/http"
-
-	"github.com/labstack/echo/v4"
+	"github.com/isazobu/dailyQuestionsAPI/questions/models"
 )
 
-func Index(c echo.Context) error {
-	return c.JSON(http.StatusOK, "Hello, World!")
+type QuestionController interface {
+	AddQuestion(question models.Question)
+}
+
+type Handler struct {
+	userStore    user.Store
+	articleStore article.Store
+}
+
+func NewHandler(us user.Store, as article.Store) *Handler {
+	return &Handler{
+		userStore:    us,
+		articleStore: as,
+	}
 }
