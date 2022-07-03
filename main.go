@@ -19,6 +19,6 @@ func main() {
 	qc := questionController.NewQuestionController(qs)
 	// Start server
 
-	router.InitRoute(r)
+	router.InitRoute(r, qc)
 	r.Logger.Fatal(r.Start(":3000"))
 }

@@ -1,13 +1,14 @@
 package questionservice
 
 import (
+	dto "github.com/isazobu/dailyQuestionsAPI/questions/dtos"
 	models "github.com/isazobu/dailyQuestionsAPI/questions/models"
 	questionrepo "github.com/isazobu/dailyQuestionsAPI/questions/repository/mongodb"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type QuestionService interface {
-	AddQuestion(question models.Question) (*mongo.InsertOneResult, error)
+	AddQuestion(question dto.CreateQuestion) (*mongo.InsertOneResult, error)
 	GetQuestionsByCategory(category string) ([]models.Question, error)
 	GetQuestionById(id string) (models.Question, error)
 	UpdateQuestion(question models.Question) (*mongo.UpdateResult, error)
@@ -21,7 +22,7 @@ func NewQuestionService(qRepo questionrepo.Repo) QuestionService {
 	return &questionService{Repo: qRepo}
 }
 
-func (q questionService) AddQuestion(question models.Question) (*mongo.InsertOneResult, error) {
+func (q questionService) AddQuestion(question dto.CreateQuestion) (*mongo.InsertOneResult, error) {
 	return q.Repo.AddQuestion(question)
 }
 

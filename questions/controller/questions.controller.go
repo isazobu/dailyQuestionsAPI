@@ -1,9 +1,10 @@
 package QuestionController
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/isazobu/dailyQuestionsAPI/questions/models"
+	dto "github.com/isazobu/dailyQuestionsAPI/questions/dtos"
 	qs "github.com/isazobu/dailyQuestionsAPI/questions/services"
 	"github.com/labstack/echo/v4"
 )
@@ -22,10 +23,11 @@ func NewQuestionController(qs qs.QuestionService) Controller {
 }
 
 func (q questionController) AddQuestion(ctx echo.Context) error {
-	var newQuestion models.Question
+	var newQuestion dto.CreateQuestion
 	if error := ctx.Bind(&newQuestion); error != nil {
 		return ctx.JSON(http.StatusNotAcceptable, nil)
 	}
+	fmt.Printf("%+v\n", newQuestion)
 	if _, error := q.qs.AddQuestion(newQuestion); error != nil {
 		return ctx.JSON(http.StatusUnauthorized, nil)
 	}

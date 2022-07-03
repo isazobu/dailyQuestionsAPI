@@ -16,7 +16,7 @@ type Question struct {
 	// Answer      string             `json:"answer" bson:"answer"`
 	// Category    string             `json:"category" bson:"category"`
 	// UserID      primitive.ObjectID `json:"user_id" bson:"user_id"`
-	// Difficulty  string             `json:"difficulty" bson:"difficulty"`
+	Difficulty string `json:"difficulty" bson:"difficulty"`
 	// CreatedAt   string             `json:"created_at" bson:"created_at"`
 	// UpdatedAt   string             `json:"updated_at" bson:"updated_at"`
 }

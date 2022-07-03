@@ -1,6 +1,7 @@
 package questionrepo
 
 import (
+	dto "github.com/isazobu/dailyQuestionsAPI/questions/dtos"
 	"github.com/isazobu/dailyQuestionsAPI/questions/models"
 	"gopkg.in/mgo.v2/bson"
 
@@ -11,7 +12,7 @@ import (
 )
 
 type Repo interface {
-	AddQuestion(question models.Question) (*mongo.InsertOneResult, error)
+	AddQuestion(question dto.CreateQuestion) (*mongo.InsertOneResult, error)
 	GetQuestionsByCategory(category string) ([]models.Question, error)
 	GetQuestionsByDiffuculty(diffuculty string) ([]models.Question, error)
 	GetQuestionById(id string) (models.Question, error)
@@ -32,7 +33,7 @@ func NewQuestionRepository(col *mongo.Collection) Repo {
 
 // var questionCollection *mongo.Collection = db.GetCollection(db.DB, "question")
 
-func (q questionRepo) AddQuestion(question models.Question) (*mongo.InsertOneResult, error) {
+func (q questionRepo) AddQuestion(question dto.CreateQuestion) (*mongo.InsertOneResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	res, err := q.collection.InsertOne(ctx, question)
