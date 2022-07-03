@@ -3,6 +3,7 @@ package QuestionController
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	dto "github.com/isazobu/dailyQuestionsAPI/questions/dtos"
 	qs "github.com/isazobu/dailyQuestionsAPI/questions/services"
@@ -24,6 +25,7 @@ func NewQuestionController(qs qs.QuestionService) Controller {
 
 func (q questionController) AddQuestion(ctx echo.Context) error {
 	var newQuestion dto.CreateQuestion
+	newQuestion.CreatedAt = time.Now()
 	if error := ctx.Bind(&newQuestion); error != nil {
 		return ctx.JSON(http.StatusNotAcceptable, nil)
 	}

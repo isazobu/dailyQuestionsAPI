@@ -10,6 +10,6 @@ import (
 func QuestionRegister(g *echo.Group, q QuestionController.Controller) {
 	g.POST("/questions", q.AddQuestion)
 	g.GET("/questions", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "Hello World")
+		return c.JSON(http.StatusOK, c.QueryParam("id"))
 	})
 }
