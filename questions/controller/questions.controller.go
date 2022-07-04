@@ -12,6 +12,7 @@ import (
 
 type Controller interface {
 	AddQuestion(ctx echo.Context) error
+	GetQuestions(ctx echo.Context) error
 }
 
 type questionController struct {
@@ -35,4 +36,20 @@ func (q questionController) AddQuestion(ctx echo.Context) error {
 	}
 
 	return ctx.JSON(http.StatusCreated, newQuestion)
+}
+
+func (q questionController) GetQuestions(ctx echo.Context) error {
+	if len(ctx.QueryParams()) == 0 {
+		questions, error := q.qs.GetQuestions()
+		if error != nil {
+			return ctx.JSON(http.StatusNotAcceptable, nil)
+		}
+		return ctx.JSON(http.StatusOK, questions)
+	} else {
+		questions, error := q.qs.GetQuestionsByFilter(ctx.QueryParams())
+		if error != nil {
+			return ctx.JSON(http.StatusNotAcceptable, nil)
+		}
+		return ctx.JSON(http.StatusOK, questions)
+	}
 }

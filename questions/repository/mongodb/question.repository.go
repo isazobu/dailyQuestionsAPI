@@ -1,6 +1,9 @@
 package questionrepo
 
 import (
+	"fmt"
+	"net/url"
+
 	dto "github.com/isazobu/dailyQuestionsAPI/questions/dtos"
 	"github.com/isazobu/dailyQuestionsAPI/questions/models"
 	"gopkg.in/mgo.v2/bson"
@@ -13,8 +16,7 @@ import (
 
 type Repo interface {
 	AddQuestion(question dto.CreateQuestion) (*mongo.InsertOneResult, error)
-	GetQuestionsByCategory(category string) ([]models.Question, error)
-	GetQuestionsByDiffuculty(diffuculty string) ([]models.Question, error)
+	GetQuestionsByFilter(params url.Values) ([]models.Question, error)
 	GetQuestionById(id string) (models.Question, error)
 	GetQuestions() ([]models.Question, error)
 	UpdateQuestion(question models.Question) (*mongo.UpdateResult, error)
@@ -31,8 +33,6 @@ func NewQuestionRepository(col *mongo.Collection) Repo {
 	}
 }
 
-// var questionCollection *mongo.Collection = db.GetCollection(db.DB, "question")
-
 func (q questionRepo) AddQuestion(question dto.CreateQuestion) (*mongo.InsertOneResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -40,12 +40,11 @@ func (q questionRepo) AddQuestion(question dto.CreateQuestion) (*mongo.InsertOne
 	return res, err
 }
 
-func (q questionRepo) GetQuestionsByCategory(category string) ([]models.Question, error) {
-	filter := bson.M{"category": category}
-	return q.GetQuestionsBySpecifiedFilter(filter)
-}
-func (q questionRepo) GetQuestionsByDiffuculty(diffuculty string) ([]models.Question, error) {
-	filter := bson.M{"diffuculty": diffuculty}
+func (q questionRepo) GetQuestionsByFilter(params url.Values) ([]models.Question, error) {
+	filter := make(bson.M)
+	for key, value := range params {
+		filter[key] = value
+	}
 	return q.GetQuestionsBySpecifiedFilter(filter)
 }
 
@@ -99,8 +98,8 @@ func (q questionRepo) DeleteQuestion(id string) error {
 func (q questionRepo) GetQuestionsBySpecifiedFilter(filter bson.M) ([]models.Question, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+	fmt.Println(filter)
 	cur, err := q.collection.Find(ctx, filter)
-
 	if err != nil {
 		return make([]models.Question, 0), err
 	}

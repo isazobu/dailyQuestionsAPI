@@ -1,6 +1,8 @@
 package questionservice
 
 import (
+	"net/url"
+
 	dto "github.com/isazobu/dailyQuestionsAPI/questions/dtos"
 	models "github.com/isazobu/dailyQuestionsAPI/questions/models"
 	questionrepo "github.com/isazobu/dailyQuestionsAPI/questions/repository/mongodb"
@@ -9,7 +11,8 @@ import (
 
 type QuestionService interface {
 	AddQuestion(question dto.CreateQuestion) (*mongo.InsertOneResult, error)
-	GetQuestionsByCategory(category string) ([]models.Question, error)
+	GetQuestions() ([]models.Question, error)
+	GetQuestionsByFilter(params url.Values) ([]models.Question, error)
 	GetQuestionById(id string) (models.Question, error)
 	UpdateQuestion(question models.Question) (*mongo.UpdateResult, error)
 	DeleteQuestion(id string) error
@@ -26,8 +29,12 @@ func (q questionService) AddQuestion(question dto.CreateQuestion) (*mongo.Insert
 	return q.Repo.AddQuestion(question)
 }
 
-func (q questionService) GetQuestionsByCategory(category string) ([]models.Question, error) {
-	return q.Repo.GetQuestionsByCategory(category)
+func (q questionService) GetQuestions() ([]models.Question, error) {
+	return q.Repo.GetQuestions()
+}
+
+func (q questionService) GetQuestionsByFilter(params url.Values) ([]models.Question, error) {
+	return q.Repo.GetQuestionsByFilter(params)
 }
 
 func (q questionService) GetQuestionById(id string) (models.Question, error) {
