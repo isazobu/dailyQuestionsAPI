@@ -80,12 +80,11 @@ func (q questionRepo) GetQuestions() ([]models.Question, error) {
 	defer cancel()
 
 	cur, err := q.collection.Find(ctx, bson.M{})
-	defer cur.Close(ctx)
 
 	if err != nil {
 		return make([]models.Question, 0), err
 	}
-
+	defer cur.Close(ctx)
 	var questions []models.Question
 	if err = cur.All(ctx, &questions); err != nil {
 		return make([]models.Question, 0), err
