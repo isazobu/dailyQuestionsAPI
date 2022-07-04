@@ -3,6 +3,7 @@ package questionrepo
 import (
 	"fmt"
 	"net/url"
+	"strings"
 
 	dto "github.com/isazobu/dailyQuestionsAPI/questions/dtos"
 	"github.com/isazobu/dailyQuestionsAPI/questions/models"
@@ -42,9 +43,26 @@ func (q questionRepo) AddQuestion(question dto.CreateQuestion) (*mongo.InsertOne
 
 func (q questionRepo) GetQuestionsByFilter(params url.Values) ([]models.Question, error) {
 	filter := make(bson.M)
+	criterias := []bson.M{}
 	for key, value := range params {
-		filter[key] = value
+		operands := make(bson.M)
+		if len(value) == 1 {
+			value = strings.Split(value[0], ",")
+		}
+		x := []bson.M{}
+		for _, val := range value {
+			y := make(bson.M)
+			y[key] = val
+			x = append(x, y)
+		}
+		operands["$or"] = x
+		criterias = append(criterias, operands)
 	}
+	filter["$and"] = criterias
+
+	//basic or operation for mongodb
+	//filter := bson.M{"$or": []bson.M{{"category": "Matematik"}, {"category": "Türkçe"}}}
+
 	return q.GetQuestionsBySpecifiedFilter(filter)
 }
 
