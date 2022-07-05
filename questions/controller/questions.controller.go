@@ -13,6 +13,7 @@ import (
 type Controller interface {
 	AddQuestion(ctx echo.Context) error
 	GetQuestions(ctx echo.Context) error
+	GetQuestionById(ctx echo.Context) error
 }
 
 type questionController struct {
@@ -52,4 +53,13 @@ func (q questionController) GetQuestions(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusOK, questions)
 	}
+}
+
+func (q questionController) GetQuestionById(ctx echo.Context) error {
+	fmt.Println(ctx.Param("id"))
+	question, err := q.qs.GetQuestionById(ctx.Param("id"))
+	if err != nil {
+		return ctx.JSON(http.StatusNotFound, "There is no questions such id.")
+	}
+	return ctx.JSON(http.StatusOK, question)
 }

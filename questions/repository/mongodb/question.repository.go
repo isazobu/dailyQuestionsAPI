@@ -12,6 +12,7 @@ import (
 	"context"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -69,7 +70,9 @@ func (q questionRepo) GetQuestionsByFilter(params url.Values) ([]models.Question
 func (q questionRepo) GetQuestionById(id string) (models.Question, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	filter := bson.M{"_id": bson.ObjectIdHex(id)}
+	obj_id, _ := primitive.ObjectIDFromHex(id)
+	//TODO: error handlingfor obj_id
+	filter := bson.M{"_id": obj_id}
 	var question models.Question
 	err := q.collection.FindOne(ctx, filter).Decode(&question)
 	return question, err

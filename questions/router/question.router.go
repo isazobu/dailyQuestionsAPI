@@ -8,4 +8,5 @@ import (
 func QuestionRegister(g *echo.Group, q QuestionController.Controller) {
 	g.POST("/questions", q.AddQuestion)
 	g.GET("/questions", q.GetQuestions)
+	g.GET("/questions/:id", q.GetQuestionById)
 }
