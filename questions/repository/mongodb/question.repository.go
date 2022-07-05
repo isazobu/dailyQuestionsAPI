@@ -21,7 +21,7 @@ type Repo interface {
 	GetQuestionsByFilter(params url.Values) ([]models.Question, error)
 	GetQuestionById(id string) (models.Question, error)
 	GetQuestions() ([]models.Question, error)
-	UpdateQuestion(question models.Question) (*mongo.UpdateResult, error)
+	UpdateQuestion(question dto.UpdateQuestion) (*mongo.UpdateResult, error)
 	DeleteQuestion(id string) error
 }
 
@@ -70,10 +70,12 @@ func (q questionRepo) GetQuestionsByFilter(params url.Values) ([]models.Question
 func (q questionRepo) GetQuestionById(id string) (models.Question, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	obj_id, _ := primitive.ObjectIDFromHex(id)
-	//TODO: error handlingfor obj_id
-	filter := bson.M{"_id": obj_id}
 	var question models.Question
+	obj_id, err_id := primitive.ObjectIDFromHex(id)
+	if err_id != nil {
+		return question, err_id
+	}
+	filter := bson.M{"_id": obj_id}
 	err := q.collection.FindOne(ctx, filter).Decode(&question)
 	return question, err
 }
@@ -98,7 +100,7 @@ func (q questionRepo) GetQuestions() ([]models.Question, error) {
 	return questions, nil
 }
 
-func (q questionRepo) UpdateQuestion(question models.Question) (*mongo.UpdateResult, error) {
+func (q questionRepo) UpdateQuestion(question dto.UpdateQuestion) (*mongo.UpdateResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	filter := bson.M{"_id": bson.ObjectIdHex(question.Id.Hex())}

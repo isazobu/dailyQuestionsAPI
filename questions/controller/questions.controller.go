@@ -8,12 +8,14 @@ import (
 	dto "github.com/isazobu/dailyQuestionsAPI/questions/dtos"
 	qs "github.com/isazobu/dailyQuestionsAPI/questions/services"
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Controller interface {
 	AddQuestion(ctx echo.Context) error
 	GetQuestions(ctx echo.Context) error
 	GetQuestionById(ctx echo.Context) error
+	UpdateQuestion(ctx echo.Context) error
 }
 
 type questionController struct {
@@ -28,12 +30,12 @@ func NewQuestionController(qs qs.QuestionService) Controller {
 func (q questionController) AddQuestion(ctx echo.Context) error {
 	var newQuestion dto.CreateQuestion
 	newQuestion.CreatedAt = time.Now()
-	if error := ctx.Bind(&newQuestion); error != nil {
-		return ctx.JSON(http.StatusNotAcceptable, nil)
+	if err := ctx.Bind(&newQuestion); err != nil {
+		return ctx.JSON(http.StatusNotAcceptable, err.Error())
 	}
 	fmt.Printf("%+v\n", newQuestion)
-	if _, error := q.qs.AddQuestion(newQuestion); error != nil {
-		return ctx.JSON(http.StatusUnauthorized, nil)
+	if _, err := q.qs.AddQuestion(newQuestion); err != nil {
+		return ctx.JSON(http.StatusUnauthorized, err.Error())
 	}
 
 	return ctx.JSON(http.StatusCreated, newQuestion)
@@ -41,15 +43,15 @@ func (q questionController) AddQuestion(ctx echo.Context) error {
 
 func (q questionController) GetQuestions(ctx echo.Context) error {
 	if len(ctx.QueryParams()) == 0 {
-		questions, error := q.qs.GetQuestions()
-		if error != nil {
-			return ctx.JSON(http.StatusNotAcceptable, nil)
+		questions, err := q.qs.GetQuestions()
+		if err != nil {
+			return ctx.JSON(http.StatusNotAcceptable, err.Error())
 		}
 		return ctx.JSON(http.StatusOK, questions)
 	} else {
-		questions, error := q.qs.GetQuestionsByFilter(ctx.QueryParams())
-		if error != nil {
-			return ctx.JSON(http.StatusNotAcceptable, nil)
+		questions, err := q.qs.GetQuestionsByFilter(ctx.QueryParams())
+		if err != nil {
+			return ctx.JSON(http.StatusNotAcceptable, err.Error())
 		}
 		return ctx.JSON(http.StatusOK, questions)
 	}
@@ -59,7 +61,18 @@ func (q questionController) GetQuestionById(ctx echo.Context) error {
 	fmt.Println(ctx.Param("id"))
 	question, err := q.qs.GetQuestionById(ctx.Param("id"))
 	if err != nil {
-		return ctx.JSON(http.StatusNotFound, "There is no questions such id.")
+		return ctx.JSON(http.StatusNotFound, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, question)
+}
+
+func (q questionController) UpdateQuestion(ctx echo.Context) error {
+	updateQuestion := dto.UpdateQuestion{}
+	fmt.Println(ctx.Param("id"))
+	objID, err := primitive.ObjectIDFromHex(ctx.Param("id"))
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+	updateQuestion.Id = objID
+	return nil
 }
