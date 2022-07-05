@@ -10,4 +10,5 @@ func QuestionRegister(g *echo.Group, q QuestionController.Controller) {
 	g.GET("/questions", q.GetQuestions)
 	g.GET("/questions/:id", q.GetQuestionById)
 	g.PUT("/questions/:id", q.UpdateQuestion)
+	g.DELETE("/questions/:id", q.DeleteQuestion)
 }

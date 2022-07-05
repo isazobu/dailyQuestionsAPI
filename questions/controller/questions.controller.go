@@ -16,6 +16,7 @@ type Controller interface {
 	GetQuestions(ctx echo.Context) error
 	GetQuestionById(ctx echo.Context) error
 	UpdateQuestion(ctx echo.Context) error
+	DeleteQuestion(ctx echo.Context) error
 }
 
 type questionController struct {
@@ -34,11 +35,19 @@ func (q questionController) AddQuestion(ctx echo.Context) error {
 		return ctx.JSON(http.StatusNotAcceptable, err.Error())
 	}
 	fmt.Printf("%+v\n", newQuestion)
-	if _, err := q.qs.AddQuestion(newQuestion); err != nil {
+	res, err := q.qs.AddQuestion(newQuestion)
+	if err != nil {
 		return ctx.JSON(http.StatusUnauthorized, err.Error())
 	}
-
-	return ctx.JSON(http.StatusCreated, newQuestion)
+	oid, ok := res.InsertedID.(primitive.ObjectID)
+	if !ok {
+		return ctx.JSON(http.StatusCreated, "Question is inserted but its id cannot be converted to primitive.ObjectID")
+	}
+	question, err := q.qs.GetQuestionById(oid.Hex())
+	if err != nil {
+		return ctx.JSON(http.StatusCreated, "Question is inserted but an error occur while fetching it from db: "+err.Error())
+	}
+	return ctx.JSON(http.StatusCreated, question)
 }
 
 func (q questionController) GetQuestions(ctx echo.Context) error {
@@ -81,4 +90,11 @@ func (q questionController) UpdateQuestion(ctx echo.Context) error {
 		return ctx.JSON(http.StatusNotModified, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, updateQuestion)
+}
+
+func (q questionController) DeleteQuestion(ctx echo.Context) error {
+	if res, err := q.qs.DeleteQuestion(ctx.Param("id")); err != nil || res.DeletedCount == 0 {
+		return ctx.JSON(http.StatusNoContent, nil)
+	}
+	return ctx.JSON(http.StatusOK, "Successfully deleted.")
 }

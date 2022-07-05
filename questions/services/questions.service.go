@@ -15,7 +15,7 @@ type QuestionService interface {
 	GetQuestionsByFilter(params url.Values) ([]models.Question, error)
 	GetQuestionById(id string) (models.Question, error)
 	UpdateQuestion(question dto.UpdateQuestion) (*mongo.UpdateResult, error)
-	DeleteQuestion(id string) error
+	DeleteQuestion(id string) (*mongo.DeleteResult, error)
 }
 type questionService struct {
 	Repo questionrepo.Repo
@@ -45,6 +45,6 @@ func (q questionService) UpdateQuestion(question dto.UpdateQuestion) (*mongo.Upd
 	return q.Repo.UpdateQuestion(question)
 }
 
-func (q questionService) DeleteQuestion(id string) error {
+func (q questionService) DeleteQuestion(id string) (*mongo.DeleteResult, error) {
 	return q.Repo.DeleteQuestion(id)
 }
