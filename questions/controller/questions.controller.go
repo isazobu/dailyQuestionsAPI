@@ -68,11 +68,17 @@ func (q questionController) GetQuestionById(ctx echo.Context) error {
 
 func (q questionController) UpdateQuestion(ctx echo.Context) error {
 	updateQuestion := dto.UpdateQuestion{}
-	fmt.Println(ctx.Param("id"))
+	updateQuestion.UpdatedAt = time.Now()
+	if err := ctx.Bind(&updateQuestion); err != nil {
+		return ctx.JSON(http.StatusNotAcceptable, err.Error())
+	}
 	objID, err := primitive.ObjectIDFromHex(ctx.Param("id"))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, err.Error())
+		return ctx.JSON(http.StatusNotAcceptable, err.Error())
 	}
 	updateQuestion.Id = objID
-	return nil
+	if _, err := q.qs.UpdateQuestion(updateQuestion); err != nil {
+		return ctx.JSON(http.StatusNotModified, err.Error())
+	}
+	return ctx.JSON(http.StatusOK, updateQuestion)
 }
