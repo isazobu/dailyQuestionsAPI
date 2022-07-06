@@ -7,9 +7,9 @@ import (
 )
 
 type UpdateQuestion struct {
-	Id          primitive.ObjectID `json:"id,omitempty" bson:"_id"`
-	Title       string             `json:"title,omitempty" form:"title" validate:"required" bson:"title"`
-	Image       string             `json:"image,omitempty" bson:"image"`
+	Id          primitive.ObjectID `json:"id" bson:"_id"`
+	Title       string             `json:"title" form:"title" validate:"required" bson:"title"`
+	Image       string             `json:"image" bson:"image"`
 	Description string             `json:"description" bson:"description"`
 	Category    string             `json:"category" bson:"category"`
 	Difficulty  string             `json:"difficulty" bson:"difficulty"`
