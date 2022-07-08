@@ -3,7 +3,6 @@ package QuestionController
 import (
 	"fmt"
 	"net/http"
-	"time"
 
 	dto "github.com/isazobu/dailyQuestionsAPI/questions/dtos"
 	qs "github.com/isazobu/dailyQuestionsAPI/questions/services"
@@ -29,27 +28,19 @@ func NewQuestionController(qs qs.QuestionService) Controller {
 }
 
 func (q questionController) AddQuestion(ctx echo.Context) error {
-	var newQuestion dto.CreateQuestion
-	newQuestion.CreatedAt = time.Now()
+	var newQuestion dto.QuestionDTO
 	if err := ctx.Bind(&newQuestion); err != nil {
 		return ctx.JSON(http.StatusNotAcceptable, err.Error())
 	}
-	fmt.Printf("%+v\n", newQuestion)
 	res, err := q.qs.AddQuestion(newQuestion)
 	if err != nil {
 		return ctx.JSON(http.StatusUnauthorized, err.Error())
 	}
-	oid, ok := res.InsertedID.(primitive.ObjectID)
-	if !ok {
-		return ctx.JSON(http.StatusCreated, "Question is inserted but its id cannot be converted to primitive.ObjectID")
-	}
-	question, err := q.qs.GetQuestionById(oid.Hex())
-	if err != nil {
-		return ctx.JSON(http.StatusCreated, "Question is inserted but an error occur while fetching it from db: "+err.Error())
-	}
-	return ctx.JSON(http.StatusCreated, question)
+	oid, _ := res.InsertedID.(primitive.ObjectID)
+	return ctx.JSON(http.StatusCreated, oid.Hex())
 }
 
+//dto üzerine düşün (q.qs.GetQuestions())
 func (q questionController) GetQuestions(ctx echo.Context) error {
 	if len(ctx.QueryParams()) == 0 {
 		questions, err := q.qs.GetQuestions()
@@ -76,17 +67,11 @@ func (q questionController) GetQuestionById(ctx echo.Context) error {
 }
 
 func (q questionController) UpdateQuestion(ctx echo.Context) error {
-	updateQuestion := dto.UpdateQuestion{}
-	updateQuestion.UpdatedAt = time.Now()
+	updateQuestion := dto.QuestionDTO{}
 	if err := ctx.Bind(&updateQuestion); err != nil {
 		return ctx.JSON(http.StatusNotAcceptable, err.Error())
 	}
-	objID, err := primitive.ObjectIDFromHex(ctx.Param("id"))
-	if err != nil {
-		return ctx.JSON(http.StatusNotAcceptable, err.Error())
-	}
-	updateQuestion.Id = objID
-	if _, err := q.qs.UpdateQuestion(updateQuestion); err != nil {
+	if _, err := q.qs.UpdateQuestion(updateQuestion, ctx.Param("id")); err != nil {
 		return ctx.JSON(http.StatusNotModified, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, updateQuestion)

@@ -1,26 +1,21 @@
 package models
 
 import (
-	"time"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Question struct {
-	Id          primitive.ObjectID `json:"id,omitempty" bson:"_id"`
-	Title       string             `json:"title,omitempty" form:"title" validate:"required" bson:"title"`
-	Image       string             `json:"image,omitempty" bson:"image"`
-	Description string             `json:"description" bson:"description"`
-	Category    string             `json:"category" bson:"category"`
-	Difficulty  string             `json:"difficulty" bson:"difficulty"`
+	Id          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Title       string             `json:"title" form:"title" validate:"required" bson:"title,omitempty"`
+	Image       string             `json:"image" bson:"image,omitempty"`
+	Description string             `json:"description" bson:"description,omitempty"`
+	Category    string             `json:"category" bson:"category,omitempty"`
+	Difficulty  string             `json:"difficulty" bson:"difficulty,omitempty"`
 
-	Option_A string `json:"option_a" bson:"option_a"`
-	Option_B string `json:"option_b" bson:"option_b"`
-	Option_C string `json:"option_c" bson:"option_c"`
-	Option_D string `json:"option_d" bson:"option_d"`
-	Option_E string `json:"option_e" bson:"option_e"`
-	Answer   string `json:"answer" bson:"answer"`
-
-	CreatedAt time.Time `json:"created_at" bson:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" bson:"updated_at"`
+	Option_A string `json:"option_a" bson:"option_a,omitempty"`
+	Option_B string `json:"option_b" bson:"option_b,omitempty"`
+	Option_C string `json:"option_c" bson:"option_c,omitempty"`
+	Option_D string `json:"option_d" bson:"option_d,omitempty"`
+	Option_E string `json:"option_e" bson:"option_e,omitempty"`
+	Answer   string `json:"answer" bson:"answer,omitempty"`
 }

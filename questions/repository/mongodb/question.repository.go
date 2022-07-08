@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"strings"
 
-	dto "github.com/isazobu/dailyQuestionsAPI/questions/dtos"
 	"github.com/isazobu/dailyQuestionsAPI/questions/models"
 	"gopkg.in/mgo.v2/bson"
 
@@ -17,11 +16,11 @@ import (
 )
 
 type Repo interface {
-	AddQuestion(question dto.CreateQuestion) (*mongo.InsertOneResult, error)
+	AddQuestion(question models.Question) (*mongo.InsertOneResult, error)
 	GetQuestionsByFilter(params url.Values) ([]models.Question, error)
 	GetQuestionById(id string) (models.Question, error)
 	GetQuestions() ([]models.Question, error)
-	UpdateQuestion(question dto.UpdateQuestion) (*mongo.UpdateResult, error)
+	UpdateQuestion(question models.Question) (*mongo.UpdateResult, error)
 	DeleteQuestion(id string) (*mongo.DeleteResult, error)
 }
 
@@ -35,7 +34,7 @@ func NewQuestionRepository(col *mongo.Collection) Repo {
 	}
 }
 
-func (q questionRepo) AddQuestion(question dto.CreateQuestion) (*mongo.InsertOneResult, error) {
+func (q questionRepo) AddQuestion(question models.Question) (*mongo.InsertOneResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	res, err := q.collection.InsertOne(ctx, question)
@@ -100,13 +99,10 @@ func (q questionRepo) GetQuestions() ([]models.Question, error) {
 	return questions, nil
 }
 
-func (q questionRepo) UpdateQuestion(question dto.UpdateQuestion) (*mongo.UpdateResult, error) {
+func (q questionRepo) UpdateQuestion(question models.Question) (*mongo.UpdateResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	obj_id, err1 := primitive.ObjectIDFromHex(question.Id.Hex())
-	if err1 != nil {
-		return nil, err1
-	}
+	obj_id, _ := primitive.ObjectIDFromHex(question.Id.Hex())
 	filter := bson.M{"_id": obj_id}
 	update := bson.M{"$set": question}
 	res, err := q.collection.UpdateOne(ctx, filter, update)
