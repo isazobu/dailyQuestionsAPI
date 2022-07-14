@@ -30,11 +30,14 @@ func NewQuestionController(qs qs.QuestionService) Controller {
 func (q questionController) AddQuestion(ctx echo.Context) error {
 	var newQuestion dto.QuestionDTO
 	if err := ctx.Bind(&newQuestion); err != nil {
-		return ctx.JSON(http.StatusNotAcceptable, err.Error())
+		return echo.NewHTTPError(http.StatusNotAcceptable, err.Error())
+	}
+	if err := ctx.Validate(newQuestion); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	res, err := q.qs.AddQuestion(newQuestion)
 	if err != nil {
-		return ctx.JSON(http.StatusUnauthorized, err.Error())
+		return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 	}
 	oid, _ := res.InsertedID.(primitive.ObjectID)
 	return ctx.JSON(http.StatusCreated, oid.Hex())

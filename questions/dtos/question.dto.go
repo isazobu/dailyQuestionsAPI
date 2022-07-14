@@ -7,26 +7,26 @@ import (
 )
 
 type QuestionDTO struct {
-	Title       string `json:"title" form:"title" validate:"required" bson:"title"`
-	Image       string `json:"image" bson:"image"`
-	Description string `json:"description" bson:"description"`
-	Category    string `json:"category" bson:"category"`
-	Difficulty  string `json:"difficulty" bson:"difficulty"`
+	Course      string `json:"course" form:"title" bson:"course" validate:"required,min=3"`
+	Image       string `json:"image" bson:"image" validate:"url"`
+	Description string `json:"description" bson:"description" validate:"required"`
+	Subject     string `json:"subject" bson:"subject" validate:"required"`
+	Difficulty  string `json:"difficulty" bson:"difficulty" validate:"required,oneof=Easy Medium Hard"`
 
-	Option_A string `json:"option_a" bson:"option_a"`
-	Option_B string `json:"option_b" bson:"option_b"`
-	Option_C string `json:"option_c" bson:"option_c"`
-	Option_D string `json:"option_d" bson:"option_d"`
-	Option_E string `json:"option_e" bson:"option_e"`
-	Answer   string `json:"answer" bson:"answer"`
+	Option_A string `json:"option_a" bson:"option_a" validate:"required"`
+	Option_B string `json:"option_b" bson:"option_b" validate:"required"`
+	Option_C string `json:"option_c" bson:"option_c" validate:"required"`
+	Option_D string `json:"option_d" bson:"option_d" validate:"required"`
+	Option_E string `json:"option_e" bson:"option_e" validate:"required"`
+	Answer   string `json:"answer" bson:"answer" validate:"required"`
 }
 
 func (q QuestionDTO) MapToQuestionModel() models.Question {
 	var target models.Question
-	target.Title = q.Title
+	target.Course = q.Course
 	target.Image = q.Image
 	target.Description = q.Description
-	target.Category = strings.ToLower(q.Category)
+	target.Subject = strings.ToLower(q.Subject)
 	target.Difficulty = strings.ToLower(q.Difficulty)
 	target.Option_A = q.Option_A
 	target.Option_B = q.Option_B
@@ -38,10 +38,10 @@ func (q QuestionDTO) MapToQuestionModel() models.Question {
 }
 
 func (q *QuestionDTO) MapFromQuestionModel(src models.Question) {
-	q.Title = src.Title
+	q.Course = src.Course
 	q.Image = src.Image
 	q.Description = src.Description
-	q.Category = src.Category
+	q.Subject = src.Subject
 	q.Difficulty = src.Difficulty
 	q.Option_A = src.Option_A
 	q.Option_B = src.Option_B
